@@ -1,6 +1,6 @@
-const artistForm = document.getElementById("artistform");
-const albumForm = document.getElementById("albumform");
-const songForm = document.getElementById("songform");
+const artistForm = document.getElementById("artist-form");
+const albumForm = document.getElementById("album-form");
+const songForm = document.getElementById("song-form");
 
 const carregarartistes = document.getElementById("carregarartistes");
 const carregaralbums = document.getElementById("carregaralbums");
@@ -8,11 +8,11 @@ const carregarcançons = document.getElementById("carregarcançons");
 
 const artistOutput = document.getElementById("consultar");
 
-const artistNameInput = document.getElementById("artistname");
-const albumTitleInput = document.getElementById("albumtitle");
-const albumArtistSelect = document.getElementById("albumartist");
-const songNameInput = document.getElementById("songname");
-const songAlbumSelect = document.getElementById("songalbum");
+const artistNameInput = document.getElementById("artist-name");
+const albumTitleInput = document.getElementById("album-title");
+const albumArtistSelect = document.getElementById("album-artist");
+const songNameInput = document.getElementById("song-name");
+const songAlbumSelect = document.getElementById("song-album");
 
 async function postJson(url, data) {
   const res = await fetch(url, {
@@ -35,35 +35,44 @@ function showResult(result) {
   artistOutput.textContent = JSON.stringify(result, null, 2);
 }
 
-function fillSelect(select, rows, valueField, textField, emptyText) {
-  select.innerHTML = "";
+async function CridaSelectBackend(table) {
+  const response = await postJson(`/api/${table}`, { data: table });
+  return response.data.result || [];
+}
+
+albumArtistSelect.addEventListener("focus", async () => {
+  albumArtistSelect.innerHTML = "";
 
   const emptyOption = document.createElement("option");
   emptyOption.value = "";
-  emptyOption.textContent = emptyText;
-  select.appendChild(emptyOption);
+  emptyOption.textContent = "Selecciona un artista";
+  albumArtistSelect.appendChild(emptyOption);
 
-  rows.forEach((row) => {
-    const option = document.createElement("option");
-    option.value = row[valueField];
-    option.textContent = row[textField];
-    select.appendChild(option);
+  let artists = await CridaSelectBackend("artists");
+  artists.forEach((artist) => {
+    let opcio = document.createElement("option");
+    opcio.value = artist.id;
+    opcio.textContent = artist.name;
+    albumArtistSelect.appendChild(opcio);
   });
-}
+});
 
-async function loadArtists() {
-  const response = await postJson("/api/artists", { data: "artists" });
-  const rows = response.data.result || [];
-  fillSelect(albumArtistSelect, rows, "id", "name", "Selecciona un artista");
-  return rows;
-}
+songAlbumSelect.addEventListener("focus", async () => {
+  songAlbumSelect.innerHTML = "";
 
-async function loadAlbumsForSelect() {
-  const response = await postJson("/api/albums", {});
-  const rows = response.data.result || [];
-  fillSelect(songAlbumSelect, rows, "id", "title", "Selecciona un album");
-  return rows;
-}
+  const emptyOption = document.createElement("option");
+  emptyOption.value = "";
+  emptyOption.textContent = "Selecciona un album";
+  songAlbumSelect.appendChild(emptyOption);
+
+  let albums = await CridaSelectBackend("albums");
+  albums.forEach((album) => {
+    let opcio = document.createElement("option");
+    opcio.value = album.id;
+    opcio.textContent = album.title;
+    songAlbumSelect.appendChild(opcio);
+  });
+});
 
 artistForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -76,7 +85,6 @@ artistForm.addEventListener("submit", async (event) => {
 
   if (response.ok) {
     artistForm.reset();
-    await loadArtists();
   }
 });
 
@@ -95,7 +103,6 @@ albumForm.addEventListener("submit", async (event) => {
 
   if (response.ok) {
     albumForm.reset();
-    await loadAlbumsForSelect();
   }
 });
 
@@ -118,12 +125,12 @@ songForm.addEventListener("submit", async (event) => {
 });
 
 carregarartistes.addEventListener("click", async () => {
-  const rows = await loadArtists();
+  const rows = await CridaSelectBackend("artists");
   showResult(rows);
 });
 
 carregaralbums.addEventListener("click", async () => {
-  const rows = await loadAlbumsForSelect();
+  const rows = await CridaSelectBackend("albums");
   showResult(rows);
 });
 
@@ -131,4 +138,3 @@ carregarcançons.addEventListener("click", async () => {
   const response = await postJson("/api/songs", {});
   showResult(response.data.result || []);
 });
-
