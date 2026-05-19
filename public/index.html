@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projecte RA6: Node + SQLite3</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main>
+    <section class="card">
+      <h1>Projecte RA6: SQLite3 amb Node</h1>
+      <p>Gestio d'artistes, albums i cancons.</p>
+      <p>Les relacions del model entitat-relacio es guarden amb taules intermedies.</p>
+    </section>
+
+    <section class="card">
+      <h2>1) Afegir artista</h2>
+      <form id="artist-form">
+        <div>
+          <label for="artist-name">Nom de l'artista</label>
+          <input id="artist-name" name="name" required />
+        </div>
+        <div>
+          <button type="submit">Desar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>2) Afegir àlbum</h2>
+      <form id="album-form">
+        <div>
+          <label for="album-title">Titol de l'album</label>
+          <input id="album-title" name="title" required />
+        </div>
+        <div>
+          <label for="album-artist">Artista</label>
+          <select id="album-artist" name="artist_id" required></select>
+        </div>
+        <div>
+          <button type="submit">Desar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>3) Afegir cançó</h2>
+      <form id="song-form">
+        <div>
+          <label for="song-name">Nom de la cançó</label>
+          <input id="song-name" name="name" required />
+        </div>
+        <div>
+          <label for="song-album">Àlbum</label>
+          <select id="song-album" name="album_id" required></select>
+        </div>
+        <div>
+          <button type="submit">Desar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>4) Consultes</h2>
+      <div class="row">
+        <button id="Carregarartistes" type="button" class="btn-small">Carregar artistes</button>
+        <button id="Carregaralbums" type="button" class="btn-small">Carregar àlbums</button>
+        <button id="Carregarcançons" type="button" class="btn-small">Carregar cançons</button>
+      </div>
+      <p id="consultar">Prem un boto de consulta per veure dades.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
